@@ -4,6 +4,7 @@ import pyautogui
 import numpy as np
 import time
 import mss
+import imutils
 import simplejpeg
 
 app = Flask(__name__)
@@ -14,6 +15,8 @@ app = Flask(__name__)
 
 new_frame_time = 0
 prev_frame_time = 0
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+font = cv2.FONT_HERSHEY_SIMPLEX
 
 def gen_frames():  # generate frame by frame from camera
     global new_frame_time
@@ -38,9 +41,11 @@ def gen_frames():  # generate frame by frame from camera
             #img = cv2.resize(img, ((int(2560*scale),int(1440*scale))))
 
             # HIGH RES BUT SLOW?
-            #img = cv2.resize(img, ((480,320)), interpolation=cv2.INTER_LANCZOS4)
+            img = imutils.resize(img, 240, 180, inter=cv2.INTER_LINEAR)
+            #img = imutils.resize(img, 240, 180, inter=cv2.INTER_LANCZOS4)
+            #img = cv2.resize(img, ((240,180)), interpolation=cv2.INTER_LINEAR)
             #img = cv2.resize(img, ((480,320)), interpolation=cv2.INTER_LINEAR)
-
+            """
             new_frame_time = time.time()
 
             # fps will be number of frame processed in given time frame
@@ -57,10 +62,9 @@ def gen_frames():  # generate frame by frame from camera
             fps = str(fps)
         
             # putting the FPS count on the frame
-            font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(img, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+            """
 
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
             ret, buffer = cv2.imencode('.jpg', img, encode_param)
             #frame = simplejpeg.encode_jpeg(img)
             
